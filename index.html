@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Visitation Cards Management System</title>
+<link rel="icon" href="assets/img/vcms-logo.png">
+<link rel="stylesheet" href="assets/css/style.css?v=4.0">
+</head>
+<body>
+
+<!-- ============ SIGN IN ============ -->
+<div id="login" class="login hidden">
+  <form id="loginForm" class="login-box" autocomplete="on">
+    <img src="assets/img/vcms-logo.png" alt="" class="login-logo" id="loginLogo">
+    <h1 id="loginTitle">Visitation Cards Management System</h1>
+    <p class="muted" id="loginSub">Sign in to continue</p>
+    <div class="notice hidden" id="loginNote"></div>
+    <label>Username<input name="username" autocomplete="username" required maxlength="30"></label>
+    <label>Password<input type="password" name="password" autocomplete="current-password" required></label>
+    <button class="btn pri wide" id="loginBtn">Sign in</button>
+    <div class="msg" id="loginMsg"></div>
+  </form>
+  <p class="copy">RwenzoriStack Systems Ltd &copy; All rights reserved</p>
+</div>
+
+<!-- ============ APPLICATION ============ -->
+<div id="app" class="shell hidden">
+  <aside class="side" id="side">
+    <div class="brand"><img src="assets/img/vcms-logo.png" alt="" id="brandLogo"><div><b id="brandName">Visitation Cards</b><small>Management System</small></div></div>
+    <nav id="nav">
+      <button data-tab="dash"    data-perm="students.view design.manage">Dashboard</button>
+      <button data-tab="reg"     data-perm="students.write">Register students</button>
+      <button data-tab="stu"     data-perm="students.view cards.print">Students</button>
+      <button data-tab="photos"  data-perm="photos.upload">Photos</button>
+      <button data-tab="cards"   data-perm="cards.print">Cards &amp; printing</button>
+      <button data-tab="promo"   data-perm="students.promote">Promotion</button>
+      <button data-tab="streams" data-perm="streams.manage">Classes &amp; streams</button>
+      <button data-tab="des"     data-perm="students.view cards.print design.manage">Card design</button>
+      <button data-tab="rep"     data-perm="reports.view">Reports</button>
+      <button data-tab="usr"     data-perm="users.manage">Users &amp; security</button>
+      <button data-tab="bak"     data-perm="backup.manage">Backups</button>
+    </nav>
+    <div class="side-foot">
+      <div class="me"><b id="meName"></b><small id="meRole"></small></div>
+      <div class="row tight"><button class="btn sm" id="pwBtn">Password</button><button class="btn sm" id="logoutBtn">Sign out</button></div>
+    </div>
+  </aside>
+
+  <div class="main-col">
+    <header class="top">
+      <button class="icon-btn" id="menuBtn" aria-label="Menu">Menu</button>
+      <div class="grow"><h1 id="pageTitle">Dashboard</h1></div>
+    </header>
+
+    <main>
+      <!-- Dashboard -->
+      <section id="dash" class="on">
+        <div class="card setup hidden" id="setupBox">
+          <h2>Welcome to the Visitation Cards Management System</h2>
+          <p class="muted">Before you register students, tell the system about your school. You enter this once. It is printed on every visitation card and shown on the Dashboard, and the school initials start every admission number.</p>
+          <form class="f" id="setupForm" autocomplete="off">
+            <label class="full">School name*<input name="name" maxlength="120" required placeholder="For example: Green Hills Secondary School"></label>
+            <label>School initials* <span class="muted">(start of every admission number)</span><input name="code" maxlength="6" required placeholder="GHSS" style="text-transform:uppercase"></label>
+            <div class="hint" id="setupExample"></div>
+            <label>Motto<input name="motto" maxlength="120" placeholder="Optional"></label>
+            <label>Address<input name="address" maxlength="200" placeholder="P.O Box, town"></label>
+            <label>Contact numbers<input name="contact" maxlength="120" placeholder="+256 700 000000"></label>
+            <label>Signature label on the card<input name="signer" maxlength="60" value="Headteacher"></label>
+            <label>Card colour<input type="color" name="color" value="#14213d"></label>
+            <label>School logo <span class="muted">(optional, PNG or JPG)</span><input type="file" name="logo" accept="image/*"></label>
+            <div class="row full"><button class="btn pri" id="setupBtn">Save school information</button><span class="muted small">You can change everything except the initials later under Card design.</span></div>
+          </form>
+          <div class="msg" id="setupMsg"></div>
+          <h3>How the top of your cards will look</h3>
+          <div id="setupPrev"></div>
+        </div>
+        <div class="card hidden" id="setupWait"><h3>The school has not been set up yet</h3><p class="muted">The administrator must sign in and enter the school information first. You can sign out and come back later.</p></div>
+        <div class="card schoolhead hidden" id="schoolHead"></div>
+        <div id="dashAlert"></div>
+        <div id="gettingStarted"></div>
+        <div class="kpis" id="kpis"></div>
+        <div class="g2">
+          <div class="card"><h3>Students per class and stream</h3><div class="tw" id="heat"></div></div>
+          <div class="card"><h3>Recently registered</h3><div class="tw" id="recent"></div></div>
+        </div>
+      </section>
+
+      <!-- Register -->
+      <section id="reg">
+        <div class="seg" id="regSeg"><button data-sub="manual" class="on">Enter manually</button><button data-sub="excel">Upload Excel file</button></div>
+
+        <div class="card" id="subManual">
+          <h3 id="regTitle">Register a student</h3>
+          <div class="notice hidden" id="noStreams">No streams have been set up yet. The administrator must add the streams for each class under <b>Classes &amp; streams</b> first.</div>
+          <form class="f" id="studentForm" novalidate autocomplete="off">
+            <div class="full notice" id="admNote">The <b>admission number is given automatically</b> (for example <b class="admEx">ABC/0001</b>) when you press Save. The photo can be added now or later under <b>Photos</b>.</div>
+            <div class="full notice hidden" id="admShow">Admission number: <b id="admVal"></b> (fixed; it never changes). <span class="muted">Class changes are done under Promotion.</span></div>
+            <input type="hidden" name="rev" value="">
+            <label>First name*<input name="first" required maxlength="40"></label>
+            <label>Last name*<input name="last" required maxlength="40"></label>
+            <label>Class*<select name="cls"></select></label>
+            <label>Stream*<select name="stream"></select></label>
+            <label>Place of origin<input name="origin" maxlength="60"></label>
+            <label>Parent/guardian first name*<input name="pf" required maxlength="40"></label>
+            <label>Parent/guardian last name*<input name="pl" required maxlength="40"></label>
+            <label>Contact number* (digits only)<input name="pc" required inputmode="numeric" maxlength="12" placeholder="0772856765"></label>
+            <label>Residential address<input name="pa" maxlength="150"></label>
+            <label>Relationship*<select name="rel"><option>Father</option><option>Mother</option><option>Guardian</option><option>Other</option></select></label>
+            <label>Profile photo<input type="file" name="photo" accept="image/*"></label>
+            <div class="row full"><button class="btn pri" id="saveBtn">Save student</button><button type="button" class="btn" id="clearBtn">Clear</button></div>
+          </form>
+          <div class="msg" id="regMsg"></div>
+        </div>
+
+        <div class="card hidden" id="subExcel">
+          <h3>Register many students from an Excel file</h3>
+          <ol class="steps">
+            <li><b>Download</b> the template.<div class="row"><a class="btn pri" href="api/index.php?action=template" id="tplBtn">Download Excel template</a></div></li>
+            <li><b>Fill in</b> one student per row, then save the file.</li>
+            <li><b>Upload</b> it. Every row is checked before anything is saved.
+              <div class="row"><input type="file" id="xlFile" accept=".xlsx,.csv" style="max-width:320px"><button class="btn" id="xlCheck">Check file</button><button class="btn pri hidden" id="xlImport"></button></div></li>
+          </ol>
+          <div class="msg" id="xlMsg"></div>
+          <div class="tw" id="xlTable"></div>
+        </div>
+      </section>
+
+      <!-- Students -->
+      <section id="stu">
+        <div class="card">
+          <div class="row"><label class="grow">Search<input id="q" placeholder="Name, admission no, guardian, phone, card no"></label>
+            <label>Class<select id="sfc"></select></label><label>Stream<select id="sfs"></select></label>
+            <label>Photo<select id="sfp"><option value="">Any</option><option value="none">Missing</option><option value="has">Has photo</option></select></label>
+            <label>Status<select id="sfst"><option value="active">Enrolled</option><option value="graduated">Graduated</option><option value="left">Left</option><option value="all">All</option></select></label>
+            <a class="btn" id="expBtn" href="api/index.php?action=export_csv">Export CSV</a>
+            <a class="btn" id="namesBtn" href="api/index.php?action=names_csv" title="Names and admission numbers of the class or stream chosen here">Name list</a>
+            <button class="btn dng" id="delSelBtn" data-perm="students.delete">Delete selected</button></div>
+          <div class="tw" id="stuTbl"></div>
+          <div id="stuPager" class="pager"></div>
+          <input type="file" id="rowPhoto" accept="image/*" class="hidden">
+          <div class="msg" id="stuMsg"></div>
+        </div>
+      </section>
+
+      <!-- Photos -->
+      <section id="photos">
+        <div class="card">
+          <h3>Upload many photos at once</h3>
+          <ol class="steps">
+            <li><b>Name each photo after the student</b>, either by admission number (the photo of <code class="admEx">ABC/0001</code> is <code class="admExF">ABC_0001.jpg</code>) or by name (<code>Anna Okello.jpg</code>). Capital letters and the order of the names do not matter.</li>
+            <li><b>Choose the photos.</b> Each one is matched to its student and the result for every file is listed.</li>
+            <li>A photo is only saved when exactly one student matches. If two students have the same name, name that file by admission number. Students who already have a photo are skipped unless you tick "Replace".</li>
+          </ol>
+          <div class="row"><label>Class<select id="phCls"></select></label><label>Stream<select id="phStream"></select></label>
+            <a class="btn" id="phNames" href="api/index.php?action=names_csv">Download name list</a>
+            <span class="muted small">Names and admission numbers, with the file name each photo should have.</span></div>
+          <div class="row"><input type="file" id="phFiles" accept="image/*" multiple style="max-width:340px">
+            <label style="flex-direction:row;align-items:center;gap:6px;color:var(--tx)"><input type="checkbox" id="phReplace"> Replace existing photos</label>
+            <button class="btn pri" id="phGo">Upload photos</button></div>
+          <div class="msg" id="phMsg"></div>
+          <div class="bar hidden" id="phBarWrap"><i id="phBar" style="width:0"></i></div>
+          <div class="tw" id="phTable"></div>
+          <p class="muted small">One photo for one student? Use the <b>Photo</b> button on that student's row under Students.</p>
+        </div>
+      </section>
+
+<!-- Cards & printing -->
+      <section id="cards">
+        <div class="card">
+          <h3>Cards</h3>
+          <div class="notice hidden" id="qrWarn"></div>
+          <div class="row">
+            <label>Class<select id="fc"></select></label>
+            <label>Stream<select id="fs"></select></label>
+            <label>Status<select id="fst"><option value="">All</option><option value="n">Unprinted</option><option value="p">Printed</option></select></label>
+            <label class="grow">Find a student<input id="fq" placeholder="Name or admission no"></label>
+          </div>
+          <div class="actionbar">
+            <span class="muted" id="cnt"></span>
+            <button class="btn sm" id="pickAll">Select this page</button><button class="btn sm" id="pickNone">Clear selection</button>
+            <span class="grow"></span>
+            <button class="btn pri" id="printBtn">Print</button><button class="btn" id="pdfBtn">Save PDF</button>
+          </div>
+          <p class="muted small">Tick the cards to print, or tick none to print everything that matches the filters. Four cards fit on one A4 page. In the print dialog choose Portrait, Margins: None, and tick Background graphics.</p>
+          <div class="msg" id="pmsg"></div>
+        </div>
+        <div class="cards" id="cardList"></div>
+        <div id="cardPager" class="pager"></div>
+      </section>
+
+      <!-- Promotion -->
+      <section id="promo">
+        <div class="card"><h3>Promote the whole school</h3>
+          <p class="muted">Every student moves up one class and keeps the admission number, photo and details. The stream name stays the same (S1 East becomes S2 East). The move happens all together and can be undone.</p>
+          <div class="row"><label>Students leaving S6 become<select id="s6mode"><option value="graduate">Graduated</option><option value="left">Left school</option></select></label>
+            <button class="btn" id="yrPreview">Preview</button></div>
+          <div id="yrOut"></div></div>
+        <div class="card"><h3>Promote one class, or only some students</h3>
+          <div class="row"><label>Move students out of<select id="pFrom"></select></label><label>Into<select id="pTo"></select></label></div>
+          <div id="pMap"></div>
+          <div class="row"><input id="pFind" placeholder="Filter the list by name" style="max-width:260px"><button class="btn sm" id="pAll">Tick all</button><button class="btn sm" id="pNone">Untick all</button><span class="muted" id="pCount"></span></div>
+          <div class="tw" id="pList" style="max-height:340px;overflow:auto"></div>
+          <div class="row"><button class="btn" id="pPreview">Preview</button><button class="btn pri" id="pGo">Promote ticked students</button></div>
+          <div class="msg" id="pMsg"></div><div id="pOut"></div></div>
+        <div class="card"><h3>Recent promotions</h3><div class="tw" id="promoHist"></div></div>
+      </section>
+
+<!-- Classes & streams -->
+      <section id="streams">
+        <div class="card">
+          <h3>Classes and streams</h3>
+          <p class="muted">Type the streams of each class, separated by commas, then save. Students can only be registered into these streams.</p>
+          <div id="streamRows"></div>
+          <div class="row"><button class="btn pri" id="streamSave">Save all streams</button></div>
+          <div class="msg" id="streamMsg"></div>
+        </div>
+      </section>
+
+      <!-- Design -->
+      <section id="des">
+        <div class="card">
+          <h3>School and card design</h3>
+          <form class="f" id="designForm" autocomplete="off">
+            <label>School name<input name="name" maxlength="120"></label>
+            <label>School initials <span class="muted">(start of admission numbers)</span><input name="code" maxlength="6" style="text-transform:uppercase"></label>
+            <div class="hint full" id="codeNote"></div>
+            <label>Motto<input name="motto" maxlength="120"></label>
+            <label>Address<input name="address" maxlength="200"></label>
+            <label>Contact numbers<input name="contact" maxlength="120"></label>
+            <label>Verification address for the QR code<input name="verify_url" maxlength="200" placeholder="http://192.168.1.10/vcms"></label>
+            <label>Colour<input type="color" name="color"></label>
+            <label>Font<select name="font"><option>Arial</option><option>Georgia</option><option>Verdana</option><option>Trebuchet MS</option><option>Times New Roman</option></select></label>
+            <label>Card width (mm)<input type="number" name="card_w" min="100" max="200"></label>
+            <label>Card height (mm)<input type="number" name="card_h" min="50" max="100"></label>
+            <label>Watermark text<input name="watermark" maxlength="40"></label>
+            <label>Signature label<input name="signer" maxlength="60"></label>
+            <label>Logo<input type="file" name="logo" id="logoFile" accept="image/*"></label>
+            <div class="row full"><button class="btn pri" id="designSave" data-perm="design.manage">Save design</button><span class="muted small">150 x 64 mm gives four cards per A4 page.</span></div>
+          </form>
+          <div class="notice hidden" id="desWarn"></div><div class="msg" id="desMsg"></div>
+        </div>
+        <div class="card"><h3>Live preview</h3><div id="prev"></div></div>
+      </section>
+
+      <!-- Reports -->
+      <section id="rep">
+        <div class="card">
+          <h3>Reports</h3>
+          <div class="row" id="repBtns">
+            <button class="btn" data-rep="reg">Registration</button><button class="btn" data-rep="cls">By class and stream</button>
+            <button class="btn" data-rep="pri">Printed vs unprinted</button><button class="btn" data-rep="pho">Missing photographs</button>
+            <button class="btn" data-rep="rpr">Reprinting</button><button class="btn" data-rep="cmp">Data completeness</button>
+          </div>
+          <div class="tw" id="repOut" style="margin-top:10px"></div><div id="repPager" class="pager"></div>
+          <div class="row"><a class="btn" id="repCsv" href="#">Export whole report (CSV)</a><button class="btn" id="repPrint">Print this page</button></div>
+        </div>
+      </section>
+
+      <!-- Users -->
+      <section id="usr">
+        <div class="card">
+          <h3 id="userTitle">Add user</h3>
+          <form class="f" id="userForm" autocomplete="off">
+            <label>Full name*<input name="full_name" maxlength="80" required></label>
+            <label>Username*<input name="username" maxlength="30" required></label>
+            <label>Role*<select name="role"></select></label>
+            <label id="pwWrap">Starting password <span class="muted">(leave empty to generate one)</span><input type="password" name="password" autocomplete="new-password"></label>
+            <div class="full"><label style="flex-direction:row;align-items:center;gap:8px;color:var(--tx)"><input type="checkbox" id="customPerms"> Tune this person's permissions (otherwise the role's standard permissions apply)</label>
+              <div id="permBox" class="permbox hidden"></div></div>
+            <div class="row full"><button class="btn pri">Save user</button><button type="button" class="btn" id="userClear">Clear</button>
+              <span class="muted small">New staff must choose their own password at first sign-in.</span></div>
+          </form>
+          <div class="msg" id="userMsg"></div>
+          <div class="tw" id="userTbl"></div>
+        </div>
+        <div class="card"><h3>Recent activity</h3><div class="tw" id="auditTbl"></div></div>
+      </section>
+
+      <!-- Backups -->
+      <section id="bak">
+        <div class="card"><h3>Backups</h3><div id="bakBody"></div></div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div id="printArea"></div>
+
+<script src="assets/vendor/qrcode.js?v=4.0" defer></script>
+<script src="assets/js/validate.js?v=4.0" defer></script>
+<script src="assets/js/cards.js?v=4.0" defer></script>
+<script src="assets/js/app.js?v=4.0" defer></script>
+</body>
+</html>
